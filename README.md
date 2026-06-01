@@ -73,6 +73,18 @@ docker compose up --build
 
 The bot token only transits between the browser and the local Nuxt server. It is never sent to third-party servers. Use HTTPS in production.
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Commits must follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
+
+```text
+feat: add guild filter
+fix: token not cleared on logout
+docs: update env variables table
+ci: add docker build workflow
+chore: bump nuxt to 3.16
+```
+
 ## License
 
 MIT

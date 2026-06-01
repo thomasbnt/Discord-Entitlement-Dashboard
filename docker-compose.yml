@@ -1,0 +1,9 @@
+services:
+  app:
+    build: .
+    env_file:
+      - path: .env
+        required: false
+    ports:
+      - "${PORT:-4545}:3000"
+    restart: unless-stopped

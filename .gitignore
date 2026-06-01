@@ -1,0 +1,14 @@
+node_modules
+.nuxt
+.output
+dist
+.env
+*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*

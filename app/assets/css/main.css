@@ -1,0 +1,16 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+/* Light mode: remap gray palette to dark values for a11y contrast */
+.light {
+  --color-gray-300: #374151;
+  --color-gray-400: #1f2937;
+  --color-gray-500: #111827;
+  --color-gray-950: #f1f5f9;
+
+  /* Nuxt UI semantic text overrides */
+  --ui-text: #111827;
+  --ui-text-highlighted: #030712;
+  --ui-text-muted: #374151;
+  --ui-text-dimmed: #4b5563;
+}

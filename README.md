@@ -9,9 +9,11 @@
 
 Web dashboard to manage [Entitlements](https://docs.discord.com/developers/resources/entitlement) for a Discord App. List, filter, delete and create test entitlements without slash commands or a certified bot account.
 
+![Web Dashboard to manage Discord App Entitlements.](https://github.com/user-attachments/assets/ac5265db-5539-456e-be88-341fb6ccca53)
+
 ## What are Premium Apps & Activities?
 
-![Discord App Monetization Overview](public/images/monetization-overview.png)
+
 
 **Premium Apps & Activities** is Discord's monetization system for developers. It lets you charge users or servers for premium features inside your Discord app:
 
@@ -19,6 +21,8 @@ Web dashboard to manage [Entitlements](https://docs.discord.com/developers/resou
 - **One-time purchases** — single payment for a permanent item or feature unlock
 
 When a user or guild pays, Discord creates an **Entitlement** — the record that grants access. This dashboard manages those entitlements directly via the Discord API.
+
+![Discord App Monetization Overview](public/images/monetization-overview.png)
 
 ## Features
 

@@ -1,6 +1,7 @@
 // Allowlist of permitted Discord API paths and their allowed HTTP methods.
 // Prevents using this proxy as an open relay to arbitrary Discord endpoints.
 const ALLOWED: Array<{ pattern: RegExp; methods: string[] }> = [
+  { pattern: /^applications\/@me$/, methods: ['GET'] },
   { pattern: /^applications\/\d+\/entitlements$/, methods: ['GET', 'POST'] },
   { pattern: /^applications\/\d+\/entitlements\/\d+$/, methods: ['GET', 'DELETE'] },
   { pattern: /^applications\/\d+\/skus$/, methods: ['GET'] },

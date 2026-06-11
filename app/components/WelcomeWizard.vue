@@ -37,7 +37,7 @@ watch(isOpen, (val) => { if (val) step.value = 0 })
           <h3 class="text-lg font-semibold">Manage your Discord app entitlements</h3>
           <img :src="'/images/monetization-overview.png'" alt="Discord Monetization" class="w-full rounded-lg" />
           <p class="text-sm text-gray-300">
-            When users or guilds subscribe to your Discord app or make a purchase, Discord creates an <strong>Entitlement</strong>. This dashboard lets you view, filter, and manage them directly — no slash commands, no certified bot account needed.
+            When users or guilds subscribe to your Discord app or make a purchase, Discord creates an <strong>Entitlement</strong>. This dashboard lets you view, filter, and manage them directly — no slash commands needed.
           </p>
           <p class="text-sm text-gray-300">
             Primarily used to <strong>create and delete test subscriptions</strong> during development, without going through the real payment flow.
@@ -94,23 +94,35 @@ watch(isOpen, (val) => { if (val) step.value = 0 })
           </div>
         </div>
 
-        <!-- Step 2: Connect -->
+        <!-- Step 2: Switch between apps -->
         <div v-if="step === 2" class="space-y-4">
-          <h3 class="text-lg font-semibold">Connect your bot</h3>
-          <p class="text-sm text-gray-300">You need two things from the <a href="https://discord.com/developers/applications" target="_blank" rel="noopener" class="text-indigo-400 hover:underline">Discord Developer Portal</a>:</p>
+          <h3 class="text-lg font-semibold">Switch between apps</h3>
+          <p class="text-sm text-gray-300">
+            The dashboard supports multiple Discord apps. Each app's credentials are saved locally so you can switch instantly — no need to re-enter your token each time.
+          </p>
           <div class="space-y-3">
             <div class="rounded-lg bg-gray-800 p-4 flex items-start gap-3">
-              <UIcon name="i-heroicons-key" class="text-indigo-400 text-xl mt-0.5 shrink-0" />
+              <UIcon name="i-heroicons-arrows-right-left" class="text-indigo-400 text-xl mt-0.5 shrink-0" />
               <div>
-                <p class="text-sm font-medium">Bot Token</p>
-                <p class="text-xs text-gray-400 mt-0.5">Your app → <strong>Bot</strong> → Reset Token. Treat it like a password — never share it.</p>
+                <p class="text-sm font-medium">App switcher</p>
+                <p class="text-xs text-gray-400 mt-0.5">Click the app name in the header to switch between saved apps or add a new one.</p>
               </div>
             </div>
             <div class="rounded-lg bg-gray-800 p-4 flex items-start gap-3">
-              <UIcon name="i-heroicons-identification" class="text-indigo-400 text-xl mt-0.5 shrink-0" />
+              <UIcon name="i-heroicons-plus-circle" class="text-green-400 text-xl mt-0.5 shrink-0" />
               <div>
-                <p class="text-sm font-medium">Application ID</p>
-                <p class="text-xs text-gray-400 mt-0.5">Your app → <strong>General Information</strong> → Application ID. Same as the bot's User ID.</p>
+                <p class="text-sm font-medium">Add another app</p>
+                <p class="text-xs text-gray-400 mt-0.5">Go to <strong>App switcher → Add another app</strong> to connect a second bot. Give it a name to tell them apart.</p>
+              </div>
+            </div>
+            <div class="rounded-lg bg-gray-800 p-4 flex items-start gap-3">
+              <UIcon name="i-heroicons-key" class="text-indigo-400 text-xl mt-0.5 shrink-0" />
+              <div>
+                <p class="text-sm font-medium">Finding your credentials</p>
+                <p class="text-xs text-gray-400 mt-0.5">
+                  <strong>Bot Token</strong> — your app → Bot → Reset Token.<br>
+                  <strong>App ID</strong> — your app → General Information → Application ID.
+                </p>
               </div>
             </div>
           </div>
@@ -124,7 +136,7 @@ watch(isOpen, (val) => { if (val) step.value = 0 })
             <UIcon name="i-heroicons-shield-check" class="text-green-400 text-2xl shrink-0 mt-0.5" />
             <div class="space-y-2 text-sm text-gray-300">
               <p><strong class="text-green-300">Your bot token is never sent to any third-party server.</strong></p>
-              <p>It is stored in your browser's <code class="bg-gray-800 px-1 rounded">localStorage</code> and only transits to <em>this local server</em>, which proxies requests directly to Discord's API.</p>
+              <p>All saved apps' credentials are stored in your browser's <code class="bg-gray-800 px-1 rounded">localStorage</code> and only transit to <em>this local server</em>, which proxies requests directly to Discord's API.</p>
               <p>No analytics, no telemetry, no external services beyond Discord.</p>
             </div>
           </div>

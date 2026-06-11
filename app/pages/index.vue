@@ -20,17 +20,14 @@ onMounted(() => {
       <div class="flex items-center gap-3">
         <UIcon name="i-simple-icons-discord" class="text-2xl text-indigo-400" />
         <h1 class="text-xl font-semibold">Entitlements</h1>
-        <UTooltip text="Manage SKUs in Developer Portal">
+        <AppSwitcher />
+        <UTooltip v-if="auth.appId" text="Manage SKUs in Developer Portal">
           <a
-            v-if="auth.appId"
             :href="`https://discord.com/developers/applications/${auth.appId}/skus`"
             target="_blank"
             rel="noopener"
           >
-            <UBadge color="neutral" variant="subtle" class="cursor-pointer hover:opacity-75 transition-opacity">
-              App {{ auth.appId }}
-              <UIcon name="i-heroicons-arrow-top-right-on-square" class="ml-1 text-xs" />
-            </UBadge>
+            <UButton icon="i-heroicons-arrow-top-right-on-square" variant="ghost" color="neutral" size="sm" />
           </a>
         </UTooltip>
       </div>
@@ -43,6 +40,11 @@ onMounted(() => {
             Help
           </UButton>
         </NuxtLink>
+        <UTooltip text="Support the developer">
+          <a href="https://thomasbnt.dev/donate" target="_blank" rel="noopener">
+            <UButton icon="i-heroicons-heart" variant="ghost" color="error" />
+          </a>
+        </UTooltip>
         <ColorModeToggle />
         <UButton
           icon="i-heroicons-arrow-right-on-rectangle"

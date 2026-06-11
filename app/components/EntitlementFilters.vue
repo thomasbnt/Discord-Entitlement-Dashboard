@@ -12,6 +12,37 @@ watch(
   },
   { deep: true }
 )
+
+function downloadCSV() {
+  const escape = (v: string | boolean | number | undefined | null) => {
+    if (v === undefined || v === null) return ''
+    const s = String(v)
+    return s.includes(',') || s.includes('"') || s.includes('\n') ? `"${s.replace(/"/g, '""')}"` : s
+  }
+
+  const headers = ['id', 'type', 'sku_id', 'sku_name', 'user_id', 'guild_id', 'deleted', 'consumed', 'starts_at', 'ends_at']
+  const rows = store.items.map(e => [
+    escape(e.id),
+    escape(e.type),
+    escape(e.sku_id),
+    escape(skusStore.getById(e.sku_id)?.name ?? ''),
+    escape(e.user_id),
+    escape(e.guild_id),
+    escape(e.deleted),
+    escape(e.consumed),
+    escape(e.starts_at),
+    escape(e.ends_at),
+  ].join(','))
+
+  const csv = [headers.join(','), ...rows].join('\n')
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `entitlements-${new Date().toISOString().slice(0, 10)}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
+}
 </script>
 
 <template>
@@ -60,15 +91,28 @@ watch(
       </div>
     </div>
 
-    <div class="mt-4 flex justify-end">
-      <UButton
-        icon="i-heroicons-arrow-path"
-        variant="ghost"
-        color="neutral"
-        size="sm"
-        :loading="store.loading"
-        @click="store.fetch()"
-      />
+    <div class="mt-4 flex items-center justify-between">
+      <p class="text-xs text-gray-500">{{ store.items.length }} entitlement{{ store.items.length !== 1 ? 's' : '' }}</p>
+      <div class="flex gap-2">
+        <UButton
+          icon="i-heroicons-arrow-down-tray"
+          variant="ghost"
+          color="neutral"
+          size="sm"
+          :disabled="store.items.length === 0 || store.loading"
+          @click="downloadCSV"
+        >
+          CSV
+        </UButton>
+        <UButton
+          icon="i-heroicons-arrow-path"
+          variant="ghost"
+          color="neutral"
+          size="sm"
+          :loading="store.loading"
+          @click="store.fetch()"
+        />
+      </div>
     </div>
   </UCard>
 </template>

@@ -30,7 +30,9 @@ export const useSkusStore = defineStore('skus', () => {
   }
 
   const selectItems = computed(() =>
-    items.value.map(s => ({ label: s.name, value: s.id }))
+    items.value
+      .filter(s => s.type !== 6)
+      .map(s => ({ label: s.name, value: s.id }))
   )
 
   return { items, loading, error, fetch, getById, selectItems }

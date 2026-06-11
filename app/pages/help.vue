@@ -58,8 +58,36 @@ const entitlementTypes = [
             <li><strong>One-time purchases</strong> — single payment for a permanent item or feature unlock.</li>
           </ul>
           <p>
-            When a user or guild pays, Discord creates an <strong>Entitlement</strong> — the record that grants access. This dashboard lets you manage those entitlements directly via the Discord API, without needing slash commands or a certified bot.
+            When a user or guild pays, Discord creates an <strong>Entitlement</strong> — the record that grants access. This dashboard lets you manage those entitlements directly via the Discord API, without needing slash commands.
           </p>
+        </div>
+      </div>
+    </UCard>
+
+    <UCard>
+      <template #header>
+        <h2 class="font-semibold">Monetization prerequisites</h2>
+      </template>
+      <div class="space-y-3 text-sm text-gray-300">
+        <p>Before entitlements can exist, your Discord app must meet the following requirements:</p>
+        <ul class="list-disc list-inside ml-2 space-y-1">
+          <li>App must be <strong>verified</strong> by Discord.</li>
+          <li>App must be owned by a <strong>developer team</strong>.</li>
+          <li>Team owner must be at least 18 years old with verified email and 2FA enabled.</li>
+          <li>App must use slash commands, or have the <code class="bg-gray-800 px-1 rounded">Message Content</code> privileged intent approved.</li>
+          <li>App must have links to a Terms of Service and a Privacy Policy.</li>
+          <li>Payouts must be set up with a valid payment method.</li>
+        </ul>
+        <div class="flex items-center gap-2 pt-1">
+          <UIcon name="i-heroicons-arrow-top-right-on-square" class="text-gray-400 shrink-0" />
+          <a
+            href="https://docs.discord.com/developers/monetization/enabling-monetization"
+            target="_blank"
+            rel="noopener"
+            class="text-indigo-400 hover:underline"
+          >
+            Discord Documentation — Enabling Monetization
+          </a>
         </div>
       </div>
     </UCard>
@@ -70,7 +98,7 @@ const entitlementTypes = [
       </template>
       <div class="space-y-2 text-sm text-gray-300">
         <p>
-          Dashboard to manage <strong>Entitlements</strong> for a Discord App without needing slash commands or a certified bot account.
+          Dashboard to manage <strong>Entitlements</strong> for a Discord App without needing slash commands.
         </p>
         <p>
           The bot token is stored locally in your browser (<code class="bg-gray-800 px-1 rounded">localStorage</code>) and only transits to your local Nuxt server — never to third parties.
@@ -189,6 +217,17 @@ const entitlementTypes = [
             class="text-indigo-400 hover:underline"
           >
             Discord Developer Portal
+          </a>
+        </div>
+        <div class="flex items-center gap-2 pt-1 border-t border-gray-700/50 mt-1">
+          <UIcon name="i-heroicons-heart" class="text-red-400 shrink-0" />
+          <a
+            href="https://thomasbnt.dev/donate"
+            target="_blank"
+            rel="noopener"
+            class="text-red-400 hover:underline font-medium"
+          >
+            Support the developer
           </a>
         </div>
       </div>

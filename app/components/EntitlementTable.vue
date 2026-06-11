@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Entitlement } from '~/stores/entitlements'
+import { ENTITLEMENT_TYPES } from '~/utils/entitlementTypes'
 
 const store = useEntitlementsStore()
 const skusStore = useSkusStore()
@@ -52,16 +53,13 @@ async function copyId(id: string) {
   toast.add({ title: 'Copied', description: id, color: 'success', duration: 2000 })
 }
 
-const TYPES: Record<number, { label: string; color: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info' | 'neutral' }> = {
-  1: { label: 'Purchase', color: 'success' },
-  2: { label: 'Premium Subscription', color: 'primary' },
-  3: { label: 'Developer Gift', color: 'secondary' },
-  4: { label: 'Test', color: 'warning' },
-  5: { label: 'Free', color: 'info' },
-  6: { label: 'User Gift', color: 'neutral' },
-  7: { label: 'Premium Purchase', color: 'primary' },
-  8: { label: 'App Subscription', color: 'primary' },
-}
+const hasActiveFilters = computed(() =>
+  !!store.filters.guild_id ||
+  !!store.filters.user_id ||
+  !!store.filters.sku_ids ||
+  store.filters.exclude_ended ||
+  store.filters.exclude_deleted
+)
 
 const now = new Date()
 
@@ -126,9 +124,16 @@ function getRow(row: any) {
 
     <UTable :data="rows" :columns="columns" :loading="store.loading">
       <template #empty>
-        <div class="flex flex-col items-center gap-2 py-8 text-gray-400">
+        <div class="flex flex-col items-center gap-3 py-10 text-gray-400">
           <UIcon name="i-heroicons-inbox" class="text-4xl" />
-          <p>No entitlements found</p>
+          <div class="text-center space-y-1">
+            <p class="font-medium text-gray-300">
+              {{ hasActiveFilters ? 'No entitlements match your filters' : 'No entitlements yet' }}
+            </p>
+            <p class="text-sm">
+              {{ hasActiveFilters ? 'Try adjusting the filters above.' : 'Create a test entitlement to get started.' }}
+            </p>
+          </div>
         </div>
       </template>
 
@@ -153,8 +158,8 @@ function getRow(row: any) {
       </template>
 
       <template #type-cell="{ row }">
-        <UBadge :color="TYPES[getRow(row).type]?.color ?? 'neutral'" variant="subtle">
-          {{ TYPES[getRow(row).type]?.label ?? `Type ${getRow(row).type}` }}
+        <UBadge :color="ENTITLEMENT_TYPES[getRow(row).type]?.color ?? 'neutral'" variant="subtle">
+          {{ ENTITLEMENT_TYPES[getRow(row).type]?.label ?? `Type ${getRow(row).type}` }}
         </UBadge>
       </template>
 
@@ -186,6 +191,18 @@ function getRow(row: any) {
         />
       </template>
     </UTable>
+
+    <div v-if="store.hasMore" class="flex justify-center pt-2">
+      <UButton
+        variant="outline"
+        color="neutral"
+        size="sm"
+        :loading="store.loadingMore"
+        @click="store.fetchMore()"
+      >
+        Load more
+      </UButton>
+    </div>
   </div>
 
   <DeleteDialog

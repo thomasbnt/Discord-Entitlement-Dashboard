@@ -7,6 +7,10 @@ interface Guild {
 // Cache guild info for the session to avoid redundant API calls
 const guildCache = new Map<string, Guild>()
 
+export function clearGuildCache() {
+  guildCache.clear()
+}
+
 export function useDiscord() {
   const auth = useAuthStore()
 

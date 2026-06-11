@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ENTITLEMENT_TYPES } from '~/utils/entitlementTypes'
+
 useHead({ title: 'Help' })
 
 const confirm = ref(false)
@@ -15,16 +17,12 @@ function showIntro() {
   navigateTo('/')
 }
 
-const entitlementTypes = [
-  { type: 1, label: 'Purchase', color: 'success' as const, description: 'One-time purchase of an item.' },
-  { type: 2, label: 'Premium Subscription', color: 'primary' as const, description: 'Discord Nitro subscription linked to the application.' },
-  { type: 3, label: 'Developer Gift', color: 'secondary' as const, description: 'Gift granted by a developer.' },
-  { type: 4, label: 'Test', color: 'warning' as const, description: 'Test purchase created manually. Deletable.' },
-  { type: 5, label: 'Free', color: 'info' as const, description: 'Entitlement granted for free.' },
-  { type: 6, label: 'User Gift', color: 'neutral' as const, description: 'Gift granted by another user.' },
-  { type: 7, label: 'Premium Purchase', color: 'primary' as const, description: 'Purchase via Discord Premium offer.' },
-  { type: 8, label: 'App Subscription', color: 'primary' as const, description: 'Direct subscription to the application. Test entitlements created via the API are deletable.' },
-]
+const entitlementTypes = (Object.entries(ENTITLEMENT_TYPES) as [string, { label: string; color: string; description: string }][]).map(([type, info]) => ({
+  type: Number(type),
+  label: info.label,
+  color: info.color,
+  description: info.description,
+}))
 </script>
 
 <template>

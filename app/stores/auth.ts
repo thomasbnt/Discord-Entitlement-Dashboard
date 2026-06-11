@@ -34,14 +34,6 @@ export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = computed(() => !!token.value && !!appId.value)
   const activeApp = computed(() => savedApps.value.find(a => a.id === activeAppId.value) ?? null)
 
-  function load() {
-    if (!import.meta.client) return
-    token.value = localStorage.getItem('discord_token') ?? ''
-    appId.value = localStorage.getItem('discord_app_id') ?? ''
-    savedApps.value = parseApps()
-    activeAppId.value = localStorage.getItem(ACTIVE_KEY) ?? ''
-  }
-
   function save(newToken: string, newAppId: string, label?: string) {
     const existing = savedApps.value.find(a => a.appId === newAppId)
     let app: SavedApp
@@ -100,5 +92,5 @@ export const useAuthStore = defineStore('auth', () => {
     return navigateTo('/login')
   }
 
-  return { token, appId, isAuthenticated, savedApps, activeApp, activeAppId, load, save, switchApp, renameApp, removeApp, logout }
+  return { token, appId, isAuthenticated, savedApps, activeApp, activeAppId, save, switchApp, renameApp, removeApp, logout }
 })

@@ -1,5 +1,7 @@
 <script setup lang="ts">
 const auth = useAuthStore()
+const entitlementsStore = useEntitlementsStore()
+const skusStore = useSkusStore()
 
 const addOpen = ref(false)
 const form = reactive({ token: '', appId: '', label: '' })
@@ -7,6 +9,12 @@ const loading = ref(false)
 const error = ref('')
 
 const confirmApp = ref<{ id: string; label: string } | null>(null)
+
+function resetStores() {
+  clearGuildCache()
+  entitlementsStore.fetch()
+  skusStore.fetch()
+}
 
 const currentLabel = computed(() => {
   const active = auth.activeApp
@@ -24,7 +32,7 @@ const items = computed(() => [
     onSelect() {
       if (app.id === auth.activeAppId) return
       auth.switchApp(app.id)
-      window.location.reload()
+      resetStores()
     }
   })),
   [
@@ -51,7 +59,7 @@ function confirmDisconnect() {
   const wasActive = confirmApp.value.id === auth.activeAppId
   auth.removeApp(confirmApp.value.id)
   confirmApp.value = null
-  if (wasActive && auth.isAuthenticated) window.location.reload()
+  if (wasActive && auth.isAuthenticated) resetStores()
 }
 
 async function validateCredentials(token: string, appId: string): Promise<string | null> {
@@ -70,7 +78,7 @@ async function submit() {
     const appName = await validateCredentials(form.token.trim(), form.appId.trim())
     auth.save(form.token.trim(), form.appId.trim(), form.label.trim() || appName || undefined)
     addOpen.value = false
-    window.location.reload()
+    resetStores()
   } catch (e: any) {
     error.value = e.data?.message ?? e.message ?? 'Invalid credentials.'
     loading.value = false

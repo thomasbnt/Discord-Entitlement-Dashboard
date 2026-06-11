@@ -37,10 +37,14 @@ function loadPersistedFilters(): Partial<EntitlementFilters> {
   }
 }
 
+const PAGE_SIZE = 100
+
 export const useEntitlementsStore = defineStore('entitlements', () => {
   const items = ref<Entitlement[]>([])
   const loading = ref(false)
+  const loadingMore = ref(false)
   const error = ref<string | null>(null)
+  const hasMore = ref(false)
 
   const persisted = loadPersistedFilters()
   const filters = ref<EntitlementFilters>({
@@ -63,22 +67,45 @@ export const useEntitlementsStore = defineStore('entitlements', () => {
     )
   }
 
+  function buildParams(): Record<string, string | boolean> {
+    const params: Record<string, string | boolean> = {}
+    if (filters.value.guild_id) params.guild_id = filters.value.guild_id
+    if (filters.value.user_id) params.user_id = filters.value.user_id
+    if (filters.value.sku_ids) params.sku_ids = filters.value.sku_ids
+    if (filters.value.exclude_ended) params.exclude_ended = true
+    if (filters.value.exclude_deleted) params.exclude_deleted = true
+    return params
+  }
+
   async function fetch() {
     const discord = useDiscord()
     loading.value = true
     error.value = null
+    hasMore.value = false
     try {
-      const params: Record<string, string | boolean> = {}
-      if (filters.value.guild_id) params.guild_id = filters.value.guild_id
-      if (filters.value.user_id) params.user_id = filters.value.user_id
-      if (filters.value.sku_ids) params.sku_ids = filters.value.sku_ids
-      if (filters.value.exclude_ended) params.exclude_ended = true
-      if (filters.value.exclude_deleted) params.exclude_deleted = true
-      items.value = (await discord.getEntitlements(params)) as Entitlement[]
+      const result = (await discord.getEntitlements(buildParams())) as Entitlement[]
+      items.value = result
+      hasMore.value = result.length === PAGE_SIZE
     } catch (e: any) {
       error.value = e.statusMessage ?? e.message ?? 'Unknown error'
     } finally {
       loading.value = false
+    }
+  }
+
+  async function fetchMore() {
+    if (!hasMore.value || items.value.length === 0 || loadingMore.value) return
+    const discord = useDiscord()
+    loadingMore.value = true
+    try {
+      const cursor = items.value[items.value.length - 1].id
+      const result = (await discord.getEntitlements({ ...buildParams(), before: cursor })) as Entitlement[]
+      items.value = [...items.value, ...result]
+      hasMore.value = result.length === PAGE_SIZE
+    } catch (e: any) {
+      error.value = e.statusMessage ?? e.message ?? 'Unknown error'
+    } finally {
+      loadingMore.value = false
     }
   }
 
@@ -100,5 +127,5 @@ export const useEntitlementsStore = defineStore('entitlements', () => {
     items.value = items.value.filter(e => !ids.includes(e.id))
   }
 
-  return { items, loading, error, filters, fetch, remove, createTest, bulkRemove }
+  return { items, loading, loadingMore, error, hasMore, filters, fetch, fetchMore, remove, createTest, bulkRemove }
 })

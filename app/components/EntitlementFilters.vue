@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ENTITLEMENT_TYPES } from '~/utils/entitlementTypes'
+
 const store = useEntitlementsStore()
 const skusStore = useSkusStore()
 
@@ -23,7 +25,7 @@ function downloadCSV() {
   const headers = ['id', 'type', 'sku_id', 'sku_name', 'user_id', 'guild_id', 'deleted', 'consumed', 'starts_at', 'ends_at']
   const rows = store.items.map(e => [
     escape(e.id),
-    escape(e.type),
+    escape(ENTITLEMENT_TYPES[e.type]?.label ?? String(e.type)),
     escape(e.sku_id),
     escape(skusStore.getById(e.sku_id)?.name ?? ''),
     escape(e.user_id),

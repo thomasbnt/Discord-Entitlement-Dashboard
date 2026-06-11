@@ -10,6 +10,11 @@ const error = ref('')
 
 const confirmApp = ref<{ id: string; label: string } | null>(null)
 
+const updateApp = ref<{ id: string; appId: string; label: string } | null>(null)
+const updateToken = ref('')
+const updateLoading = ref(false)
+const updateError = ref('')
+
 function resetStores() {
   clearGuildCache()
   entitlementsStore.fetch()
@@ -50,8 +55,8 @@ const items = computed(() => [
   ]
 ])
 
-function askDisconnect(appId: string, label: string) {
-  confirmApp.value = { id: appId, label }
+function askDisconnect(id: string, label: string) {
+  confirmApp.value = { id, label }
 }
 
 function confirmDisconnect() {
@@ -60,6 +65,14 @@ function confirmDisconnect() {
   auth.removeApp(confirmApp.value.id)
   confirmApp.value = null
   if (wasActive && auth.isAuthenticated) resetStores()
+}
+
+function openUpdate(id: string) {
+  const app = auth.savedApps.find(a => a.id === id)
+  if (!app) return
+  updateApp.value = { id: app.id, appId: app.appId, label: app.label }
+  updateToken.value = ''
+  updateError.value = ''
 }
 
 async function validateCredentials(token: string, appId: string): Promise<string | null> {
@@ -81,10 +94,26 @@ async function submit() {
     resetStores()
   } catch (e: any) {
     error.value = e.data?.message ?? e.message ?? 'Invalid credentials.'
+  } finally {
     loading.value = false
   }
 }
 
+async function submitUpdate() {
+  if (!updateApp.value || !updateToken.value.trim()) return
+  updateLoading.value = true
+  updateError.value = ''
+  try {
+    await validateCredentials(updateToken.value.trim(), updateApp.value.appId)
+    auth.save(updateToken.value.trim(), updateApp.value.appId)
+    if (updateApp.value.id === auth.activeAppId) resetStores()
+    updateApp.value = null
+  } catch (e: any) {
+    updateError.value = e.data?.message ?? e.message ?? 'Invalid token.'
+  } finally {
+    updateLoading.value = false
+  }
+}
 </script>
 
 <template>
@@ -101,21 +130,30 @@ async function submit() {
           class="flex items-center justify-between w-full gap-2 rounded"
           :class="item.isActive ? 'cursor-default' : 'cursor-pointer'"
         >
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 min-w-0">
             <UIcon
               :name="item.isActive ? 'i-heroicons-check-circle' : 'i-heroicons-server'"
               class="shrink-0 text-sm"
               :class="item.isActive ? 'text-indigo-400' : 'text-gray-400'"
             />
-            <span class="text-sm" :class="item.isActive ? 'font-medium' : ''">{{ item.label }}</span>
+            <span class="text-sm truncate" :class="item.isActive ? 'font-medium' : ''">{{ item.label }}</span>
           </div>
-          <button
-            type="button"
-            class="shrink-0 flex items-center text-red-400 opacity-50 hover:opacity-100 cursor-pointer"
-            @click.stop.prevent="askDisconnect(item.appId, item.label)"
-          >
-            <UIcon name="i-heroicons-trash" class="w-3.5 h-3.5" />
-          </button>
+          <div class="flex items-center gap-1 shrink-0">
+            <button
+              type="button"
+              class="flex items-center text-gray-400 opacity-50 hover:opacity-100 cursor-pointer"
+              @click.stop.prevent="openUpdate(item.appId)"
+            >
+              <UIcon name="i-heroicons-pencil" class="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              class="flex items-center text-red-400 opacity-50 hover:opacity-100 cursor-pointer"
+              @click.stop.prevent="askDisconnect(item.appId, item.label)"
+            >
+              <UIcon name="i-heroicons-trash" class="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
       </template>
     </UDropdownMenu>
@@ -169,6 +207,33 @@ async function submit() {
         <UButton variant="ghost" color="neutral" @click="addOpen = false">Cancel</UButton>
         <UButton :loading="loading" :disabled="!form.token || !form.appId" @click="submit">
           Connect
+        </UButton>
+      </div>
+    </template>
+  </UModal>
+
+  <UModal :open="!!updateApp" :title="`Update token — ${updateApp?.label}`" @update:open="val => { if (!val) updateApp = null }">
+    <template #body>
+      <div class="space-y-4">
+        <UAlert v-if="updateError" color="error" :description="updateError" />
+        <div class="space-y-1">
+          <label class="block text-sm font-medium">New Bot Token</label>
+          <UInput
+            v-model="updateToken"
+            type="password"
+            placeholder="Your new bot token"
+            class="w-full"
+            @keyup.enter="submitUpdate"
+          />
+          <p class="text-xs text-gray-500">Your app → <strong>Bot</strong> → Reset Token</p>
+        </div>
+      </div>
+    </template>
+    <template #footer>
+      <div class="flex justify-end gap-2">
+        <UButton variant="ghost" color="neutral" @click="updateApp = null">Cancel</UButton>
+        <UButton :loading="updateLoading" :disabled="!updateToken" @click="submitUpdate">
+          Update
         </UButton>
       </div>
     </template>

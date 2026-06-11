@@ -61,11 +61,9 @@ const hasActiveFilters = computed(() =>
   store.filters.exclude_deleted
 )
 
-const now = new Date()
-
 function statusColor(e: Entitlement): string {
   if (e.deleted) return 'bg-red-500'
-  if (e.ends_at && new Date(e.ends_at) <= now) return 'bg-gray-500'
+  if (e.ends_at && new Date(e.ends_at) <= new Date()) return 'bg-gray-500'
   if (e.type === 4 || !e.starts_at) return 'bg-yellow-400'
   return 'bg-green-500'
 }
@@ -85,7 +83,7 @@ const columns = [
 const rows = computed(() =>
   store.items.map((e: Entitlement) => ({
     ...e,
-    _deletable: e.type === 4 || e.type === 3 || !e.starts_at,
+    _deletable: e.type === 4 || !e.starts_at,
     _statusColor: statusColor(e),
     starts_at: e.starts_at ? new Date(e.starts_at).toLocaleDateString('en-GB') : '—',
     ends_at: e.ends_at ? new Date(e.ends_at).toLocaleDateString('en-GB') : '—',
@@ -106,7 +104,7 @@ function getRow(row: any) {
   <div class="space-y-3">
     <!-- Bulk action bar -->
     <Transition name="slide-down">
-      <div v-if="selected.size > 0" class="flex items-center gap-3 p-3 rounded-lg bg-gray-800 border border-gray-700">
+      <div v-if="selected.size > 0" class="flex items-center gap-3 p-3 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
         <span class="text-sm text-gray-300">{{ selected.size }} selected</span>
         <template v-if="!bulkConfirm">
           <UButton color="error" variant="outline" size="sm" icon="i-heroicons-trash" @click="bulkConfirm = true">

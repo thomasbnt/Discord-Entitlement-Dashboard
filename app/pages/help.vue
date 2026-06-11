@@ -46,7 +46,7 @@ const entitlementTypes = (Object.entries(ENTITLEMENT_TYPES) as [string, { label:
           alt="Discord App Monetization Overview"
           class="w-full rounded-lg"
         />
-        <div class="space-y-2 text-sm text-gray-300">
+        <div class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
           <p>
             <strong>Premium Apps & Activities</strong> is Discord's monetization system for developers. It lets you charge users or servers for access to premium features inside your Discord app.
           </p>
@@ -66,18 +66,18 @@ const entitlementTypes = (Object.entries(ENTITLEMENT_TYPES) as [string, { label:
       <template #header>
         <h2 class="font-semibold">Monetization prerequisites</h2>
       </template>
-      <div class="space-y-3 text-sm text-gray-300">
+      <div class="space-y-3 text-sm text-gray-600 dark:text-gray-300">
         <p>Before entitlements can exist, your Discord app must meet the following requirements:</p>
         <ul class="list-disc list-inside ml-2 space-y-1">
           <li>App must be <strong>verified</strong> by Discord.</li>
           <li>App must be owned by a <strong>developer team</strong>.</li>
           <li>Team owner must be at least 18 years old with verified email and 2FA enabled.</li>
-          <li>App must use slash commands, or have the <code class="bg-gray-800 px-1 rounded">Message Content</code> privileged intent approved.</li>
+          <li>App must use slash commands, or have the <code class="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-1 rounded">Message Content</code> privileged intent approved.</li>
           <li>App must have links to a Terms of Service and a Privacy Policy.</li>
           <li>Payouts must be set up with a valid payment method.</li>
         </ul>
         <div class="flex items-center gap-2 pt-1">
-          <UIcon name="i-heroicons-arrow-top-right-on-square" class="text-gray-400 shrink-0" />
+          <UIcon name="i-heroicons-arrow-top-right-on-square" class="text-gray-500 dark:text-gray-400 shrink-0" />
           <a
             href="https://docs.discord.com/developers/monetization/enabling-monetization"
             target="_blank"
@@ -94,12 +94,12 @@ const entitlementTypes = (Object.entries(ENTITLEMENT_TYPES) as [string, { label:
       <template #header>
         <h2 class="font-semibold">About</h2>
       </template>
-      <div class="space-y-2 text-sm text-gray-300">
+      <div class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
         <p>
           Dashboard to manage <strong>Entitlements</strong> for a Discord App without needing slash commands.
         </p>
         <p>
-          The bot token is stored locally in your browser (<code class="bg-gray-800 px-1 rounded">localStorage</code>) and only transits to your local Nuxt server — never to third parties.
+          The bot token is stored locally in your browser (<code class="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-1 rounded">localStorage</code>) and only transits to your local Nuxt server — never to third parties.
         </p>
       </div>
     </UCard>
@@ -113,7 +113,7 @@ const entitlementTypes = (Object.entries(ENTITLEMENT_TYPES) as [string, { label:
           <UBadge :color="t.color" variant="subtle" class="mt-0.5 shrink-0">
             {{ t.label }}
           </UBadge>
-          <span class="text-sm text-gray-300">{{ t.description }}</span>
+          <span class="text-sm text-gray-600 dark:text-gray-300">{{ t.description }}</span>
         </div>
       </div>
     </UCard>
@@ -122,13 +122,13 @@ const entitlementTypes = (Object.entries(ENTITLEMENT_TYPES) as [string, { label:
       <template #header>
         <h2 class="font-semibold">Deleting an entitlement</h2>
       </template>
-      <div class="space-y-2 text-sm text-gray-300">
+      <div class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
         <p>The <UIcon name="i-heroicons-trash" class="inline text-red-400" /> button only appears on deletable entitlements:</p>
         <ul class="list-disc list-inside space-y-1 ml-2">
           <li>Type <strong>Test</strong> (type 4)</li>
           <li>Entitlements created via the API <em>(no start date — valid in perpetuity)</em></li>
         </ul>
-        <p class="text-gray-400">Real subscriptions cannot be deleted from the dashboard.</p>
+        <p class="text-gray-500 dark:text-gray-400">Real subscriptions cannot be deleted from the dashboard.</p>
       </div>
     </UCard>
 
@@ -136,13 +136,13 @@ const entitlementTypes = (Object.entries(ENTITLEMENT_TYPES) as [string, { label:
       <template #header>
         <h2 class="font-semibold">Guild names</h2>
       </template>
-      <div class="space-y-2 text-sm text-gray-300">
+      <div class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
         <p>Guild names are resolved in two steps:</p>
         <ol class="list-decimal list-inside space-y-1 ml-2">
           <li><strong>Bot member</strong> — full guild info if the bot is in the server.</li>
           <li><strong>Public widget</strong> — guild name from the widget endpoint if the server has widgets enabled (no membership required).</li>
         </ol>
-        <p class="text-gray-400">If both fail, the raw guild ID is shown.</p>
+        <p class="text-gray-500 dark:text-gray-400">If both fail, the raw guild ID is shown.</p>
       </div>
     </UCard>
 
@@ -151,7 +151,7 @@ const entitlementTypes = (Object.entries(ENTITLEMENT_TYPES) as [string, { label:
         <h2 class="font-semibold">Introduction</h2>
       </template>
       <div class="flex items-center justify-between">
-        <p class="text-sm text-gray-300">Replay the welcome wizard shown on first visit.</p>
+        <p class="text-sm text-gray-600 dark:text-gray-300">Replay the welcome wizard shown on first visit.</p>
         <UButton icon="i-heroicons-play" variant="outline" color="neutral" @click="showIntro">
           Show introduction
         </UButton>
@@ -163,7 +163,7 @@ const entitlementTypes = (Object.entries(ENTITLEMENT_TYPES) as [string, { label:
         <h2 class="font-semibold text-red-400">Danger zone</h2>
       </template>
       <div class="space-y-3">
-        <p class="text-sm text-gray-300">
+        <p class="text-sm text-gray-600 dark:text-gray-300">
           Clears all localStorage data: bot token, application ID, and saved filter preferences. You will be redirected to the login page.
         </p>
         <div v-if="!confirm">
@@ -185,7 +185,7 @@ const entitlementTypes = (Object.entries(ENTITLEMENT_TYPES) as [string, { label:
       </template>
       <div class="space-y-2 text-sm">
         <div class="flex items-center gap-2">
-          <UIcon name="i-heroicons-arrow-top-right-on-square" class="text-gray-400 shrink-0" />
+          <UIcon name="i-heroicons-arrow-top-right-on-square" class="text-gray-500 dark:text-gray-400 shrink-0" />
           <a
             href="https://docs.discord.com/developers/resources/entitlement"
             target="_blank"
@@ -196,7 +196,7 @@ const entitlementTypes = (Object.entries(ENTITLEMENT_TYPES) as [string, { label:
           </a>
         </div>
         <div class="flex items-center gap-2">
-          <UIcon name="i-heroicons-arrow-top-right-on-square" class="text-gray-400 shrink-0" />
+          <UIcon name="i-heroicons-arrow-top-right-on-square" class="text-gray-500 dark:text-gray-400 shrink-0" />
           <a
             href="https://docs.discord.com/developers/platform/app-monetization"
             target="_blank"
@@ -207,7 +207,7 @@ const entitlementTypes = (Object.entries(ENTITLEMENT_TYPES) as [string, { label:
           </a>
         </div>
         <div class="flex items-center gap-2">
-          <UIcon name="i-heroicons-arrow-top-right-on-square" class="text-gray-400 shrink-0" />
+          <UIcon name="i-heroicons-arrow-top-right-on-square" class="text-gray-500 dark:text-gray-400 shrink-0" />
           <a
             href="https://discord.com/developers/applications"
             target="_blank"
@@ -217,7 +217,7 @@ const entitlementTypes = (Object.entries(ENTITLEMENT_TYPES) as [string, { label:
             Discord Developer Portal
           </a>
         </div>
-        <div class="flex items-center gap-2 pt-1 border-t border-gray-700/50 mt-1">
+        <div class="flex items-center gap-2 pt-1 border-t border-gray-200 dark:border-gray-700/50 mt-1">
           <UIcon name="i-heroicons-heart" class="text-red-400 shrink-0" />
           <a
             href="https://thomasbnt.dev/donate"

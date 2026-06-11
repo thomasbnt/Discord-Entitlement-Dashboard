@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import { ENTITLEMENT_TYPES } from '~/utils/entitlementTypes'
+
 const store = useEntitlementsStore()
 
-const now = new Date()
-
 const stats = computed(() => {
+  const now = new Date()
   const items = store.items
   const total = items.length
   const active = items.filter(e =>
@@ -12,7 +13,7 @@ const stats = computed(() => {
   const expired = items.filter(e =>
     e.ends_at && new Date(e.ends_at) <= now
   ).length
-  const test = items.filter(e => e.type === 4 || e.type === 3 || !e.starts_at).length
+  const test = items.filter(e => e.type === 4 || !e.starts_at).length
 
   return { total, active, expired, test }
 })
@@ -28,17 +29,6 @@ const TYPE_COLORS: Record<number, string> = {
   8: 'bg-primary-400',
 }
 
-const TYPE_LABELS: Record<number, string> = {
-  1: 'Purchase',
-  2: 'Premium Sub',
-  3: 'Dev Gift',
-  4: 'Test',
-  5: 'Free',
-  6: 'User Gift',
-  7: 'Premium Purchase',
-  8: 'App Subscription',
-}
-
 const typeBreakdown = computed(() => {
   const total = store.items.length
   if (total === 0) return []
@@ -51,7 +41,7 @@ const typeBreakdown = computed(() => {
     count,
     pct: Math.round((count / total) * 100),
     color: TYPE_COLORS[Number(type)] ?? 'bg-gray-500',
-    label: TYPE_LABELS[Number(type)] ?? `Type ${type}`,
+    label: ENTITLEMENT_TYPES[Number(type)]?.label ?? `Type ${type}`,
   })).sort((a, b) => b.count - a.count)
 })
 </script>

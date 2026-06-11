@@ -94,8 +94,20 @@ function downloadCSV() {
     </div>
 
     <div class="mt-4 flex items-center justify-between">
-      <p class="text-xs text-gray-500">{{ store.items.length }} entitlement{{ store.items.length !== 1 ? 's' : '' }}</p>
+      <p class="text-xs text-gray-500">
+        {{ store.items.length }}{{ store.hasMore ? '+' : '' }} entitlement{{ store.items.length !== 1 ? 's' : '' }}
+      </p>
       <div class="flex gap-2">
+        <UButton
+          v-if="store.filters.guild_id || store.filters.user_id || store.filters.sku_ids || store.filters.exclude_ended || store.filters.exclude_deleted"
+          icon="i-heroicons-x-mark"
+          variant="ghost"
+          color="neutral"
+          size="sm"
+          @click="store.resetFilters()"
+        >
+          Reset
+        </UButton>
         <UButton
           icon="i-heroicons-arrow-down-tray"
           variant="ghost"

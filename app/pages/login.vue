@@ -11,10 +11,18 @@ async function submit() {
   loading.value = true
   error.value = ''
   try {
-    auth.save(form.token.trim(), form.appId.trim(), form.label.trim() || undefined)
+    const data = await $fetch<{ id: string; name: string }>('/api/discord/applications/@me', {
+      headers: { 'x-discord-token': form.token.trim() }
+    })
+    if (data.id !== form.appId.trim()) {
+      error.value = 'Application ID does not match this bot token.'
+      return
+    }
+    auth.save(form.token.trim(), form.appId.trim(), form.label.trim() || data.name || undefined)
     await navigateTo('/')
-  } catch {
-    error.value = 'Connection error.'
+  } catch (e: any) {
+    error.value = e.data?.message ?? e.message ?? 'Connection error.'
+  } finally {
     loading.value = false
   }
 }
@@ -26,7 +34,7 @@ function switchTo(id: string) {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-950 p-4">
+  <div class="min-h-dvh grid place-items-center bg-gray-100 dark:bg-gray-950 p-4">
     <UCard class="w-full max-w-md">
       <template #header>
         <div class="flex items-center gap-3">
@@ -42,12 +50,12 @@ function switchTo(id: string) {
         <UAlert v-if="error" color="error" :description="error" />
 
         <div v-if="auth.savedApps.length > 0" class="space-y-3">
-          <p class="text-sm font-medium text-gray-400">Saved apps</p>
+          <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Saved apps</p>
           <div class="space-y-2">
             <div
               v-for="app in auth.savedApps"
               :key="app.id"
-              class="flex items-center justify-between gap-2 rounded-lg bg-gray-800 px-3 py-2"
+              class="flex items-center justify-between gap-2 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-transparent px-3 py-2"
             >
               <div class="flex items-center gap-2 min-w-0">
                 <UIcon name="i-heroicons-server" class="text-indigo-400 shrink-0" />

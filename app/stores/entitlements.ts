@@ -1,3 +1,5 @@
+import { skipHydrate } from 'pinia'
+
 export interface Entitlement {
   id: string
   sku_id: string
@@ -21,6 +23,14 @@ export interface EntitlementFilters {
 
 const STORAGE_KEY = 'entitlement_filters'
 
+const DEFAULT_FILTERS: EntitlementFilters = {
+  guild_id: '',
+  user_id: '',
+  sku_ids: null,
+  exclude_ended: true,
+  exclude_deleted: false,
+}
+
 function loadPersistedFilters(): Partial<EntitlementFilters> {
   if (!import.meta.client) return {}
   try {
@@ -28,6 +38,8 @@ function loadPersistedFilters(): Partial<EntitlementFilters> {
     if (!raw) return {}
     const parsed = JSON.parse(raw)
     return {
+      guild_id: typeof parsed.guild_id === 'string' ? parsed.guild_id : '',
+      user_id: typeof parsed.user_id === 'string' ? parsed.user_id : '',
       sku_ids: typeof parsed.sku_ids === 'string' ? parsed.sku_ids : null,
       exclude_ended: typeof parsed.exclude_ended === 'boolean' ? parsed.exclude_ended : true,
       exclude_deleted: typeof parsed.exclude_deleted === 'boolean' ? parsed.exclude_deleted : false,
@@ -58,6 +70,8 @@ export const useEntitlementsStore = defineStore('entitlements', () => {
   if (import.meta.client) {
     watch(
       () => ({
+        guild_id: filters.value.guild_id,
+        user_id: filters.value.user_id,
         sku_ids: filters.value.sku_ids,
         exclude_ended: filters.value.exclude_ended,
         exclude_deleted: filters.value.exclude_deleted,
@@ -121,11 +135,15 @@ export const useEntitlementsStore = defineStore('entitlements', () => {
     items.value.unshift(created)
   }
 
+  function resetFilters() {
+    filters.value = { ...DEFAULT_FILTERS }
+  }
+
   async function bulkRemove(ids: string[]) {
     const discord = useDiscord()
     await Promise.all(ids.map(id => discord.deleteEntitlement(id)))
     items.value = items.value.filter(e => !ids.includes(e.id))
   }
 
-  return { items, loading, loadingMore, error, hasMore, filters, fetch, fetchMore, remove, createTest, bulkRemove }
+  return { items, loading, loadingMore, error, hasMore, filters: skipHydrate(filters), fetch, fetchMore, remove, createTest, bulkRemove, resetFilters }
 })

@@ -1,3 +1,5 @@
+import { skipHydrate } from 'pinia'
+
 export interface SavedApp {
   id: string
   label: string
@@ -92,5 +94,17 @@ export const useAuthStore = defineStore('auth', () => {
     return navigateTo('/login')
   }
 
-  return { token, appId, isAuthenticated, savedApps, activeApp, activeAppId, save, switchApp, renameApp, removeApp, logout }
+  return {
+    token: skipHydrate(token),
+    appId: skipHydrate(appId),
+    savedApps: skipHydrate(savedApps),
+    activeAppId: skipHydrate(activeAppId),
+    isAuthenticated,
+    activeApp,
+    save,
+    switchApp,
+    renameApp,
+    removeApp,
+    logout,
+  }
 })
